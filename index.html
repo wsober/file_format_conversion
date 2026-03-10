@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF 转图片工具 - 本地测试版</title>
+    <title>文档转图片工具 - 智能版</title>
     <!-- 引入 PDF.js 库 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
@@ -64,23 +64,37 @@
         }
 
         .upload-area {
-            border: 3px dashed #667eea;
-            border-radius: 15px;
+           border: 3px dashed #667eea;
+          border-radius: 15px;
             padding: 60px 40px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: white;
-            position: relative;
+           text-align: center;
+           cursor: pointer;
+           transition: all 0.3s ease;
+          background: white;
+           position: relative;
         }
 
         .upload-area:hover {
-            border-color: #764ba2;
-            background: #f0f4ff;
-            transform: translateY(-2px);
-        }
+          border-color: #764ba2;
+          background: #f0f4ff;
+         transform: translateY(-2px);
+       }
 
-        .upload-area.drag-over {
+       /* 转换中时的禁用状态 */
+      .upload-area.converting {
+        border-color: #ccc;
+        background: #f9f9f9;
+         cursor: not-allowed;
+         opacity: 0.6;
+      }
+
+      .upload-area.converting:hover {
+        border-color: #ccc;
+        background: #f9f9f9;
+        transform: none;
+      }
+
+      .upload-area.drag-over {
             border-color: #764ba2;
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
             transform: scale(1.02);
@@ -218,6 +232,78 @@
             font-weight: 700;
         }
 
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .selection-info {
+            font-weight: 600;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .selection-count {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn-sm {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-btn-sm:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-btn-sm.primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .action-btn-sm.primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .action-btn-sm.danger {
+            background: #f5576c;
+            color: white;
+            border-color: #f5576c;
+        }
+
+        .action-btn-sm.danger:hover {
+            background: #e8455a;
+            transform: translateY(-2px);
+        }
+
         .batch-download-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -246,6 +332,138 @@
             box-shadow: none;
         }
 
+        /* ==================== 批量操作工具栏 ==================== */
+        .batch-actions-toolbar {
+            display: none;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .batch-actions-toolbar.show {
+            display: flex;
+        }
+
+        .batch-actions-toolbar.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .selection-info {
+            font-weight: 600;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .selection-count {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .batch-action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .action-btn.danger {
+            background: #f5576c;
+            color: white;
+            border-color: #f5576c;
+        }
+
+        .action-btn.danger:hover {
+            background: #e8455a;
+            transform: translateY(-2px);
+        }
+
+        /* ==================== 图片卡片复选框 ==================== */
+        .image-checkbox {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #667eea;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        /* 鼠标悬停或选中时显示复选框 */
+       .image-card:hover .image-checkbox,
+       .image-checkbox.checked {
+            opacity: 1;
+       transform: scale(1);
+        }
+
+        .image-checkbox.checked {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        .image-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .image-card.selected .image-wrapper {
+            box-shadow: 0 0 0 3px #667eea;
+        }
+
         .images-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -254,15 +472,16 @@
 
         .image-card {
             background: white;
-            border-radius: 12px;
+           border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+           box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;  /* 为复选框的 absolute 定位提供参考 */
         }
 
-        .image-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        /* 图片卡片在解析完成前禁止点击 */
+        .image-card.disabled {
+            pointer-events: none;
+            opacity: 0.6;
         }
 
         .image-wrapper {
@@ -417,44 +636,23 @@
     <div class="container">
         <!-- 头部 -->
         <header>
-            <h1>📄 PDF 转图片工具（本地测试）</h1>
-            <p class="subtitle">将 PDF 文件转换为高质量 PNG/JPG 图片 - 纯前端版本</p>
+            <h1>📄 文档转图片工具（智能版）</h1>
+            <p class="subtitle">支持 PDF、Word、PowerPoint 转高质量图片 - 自动检测后端</p>
         </header>
 
         <!-- 上传区域 -->
         <section class="upload-section">
             <div class="upload-area" id="uploadArea">
                 <div class="upload-icon">📤</div>
-                <div class="upload-text">点击或拖拽上传 PDF 文件</div>
-                <div class="upload-hint">支持 PDF 格式，最大 50MB（纯前端处理，不上传服务器）</div>
-                <input type="file" class="file-input" id="fileInput" accept=".pdf,application/pdf">
+                <div class="upload-text">点击或拖拽上传文档</div>
+                <div class="upload-hint">支持 PDF、DOCX、DOC、PPTX 格式，最大 50MB（纯前端处理，不上传服务器）</div>
+                <input type="file" class="file-input" id="fileInput" accept=".pdf,.docx,.doc,.pptx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,application/vnd.openxmlformats-officedocument.presentationml.presentation">
             </div>
         </section>
 
         <!-- 设置选项 -->
         <section class="settings-section">
-            <div class="setting-group">
-                <label class="setting-label">输出格式:</label>
-                <select class="setting-select" id="formatSelect">
-                    <option value="png">PNG（推荐）</option>
-                    <option value="jpeg">JPG</option>
-                </select>
-            </div>
-            <div class="setting-group">
-                <label class="setting-label">图片尺寸:</label>
-                <input type="range" class="scale-slider" id="scaleSlider" 
-                       min="1" max="3" step="0.5" value="2">
-                <span id="scaleValue">2x</span>
-            </div>
-            <div class="setting-group">
-                <label class="setting-label">JPG 质量:</label>
-                <select class="setting-select" id="qualitySelect">
-                    <option value="0.8">高（80%）</option>
-                    <option value="0.9">最高（90%）</option>
-                    <option value="0.7">中（70%）</option>
-                    <option value="0.6">低（60%）</option>
-                </select>
-            </div>
+            <!-- 已移除质量控制，统一使用 PNG 格式 -->
         </section>
 
         <!-- 进度条 -->
@@ -472,12 +670,22 @@
         <section class="images-section">
             <div class="section-header">
                 <h2 class="section-title" id="sectionTitle">转换结果</h2>
-                <button class="batch-download-btn" id="batchDownloadBtn" disabled>
-                    <span>📦</span>
-                    <span id="batchDownloadText">批量下载全部图片</span>
-                </button>
-            </div>
-            
+              <div class="header-actions">
+                  <div class="action-buttons">
+                      <button class="action-btn-sm" id="selectAllBtn" disabled>
+                          ✅ 全选
+                      </button>
+                      <button class="action-btn-sm" id="deselectAllBtn" disabled>
+                          ❌ 取消全选
+                      </button>
+                      <button class="batch-download-btn" id="batchDownloadBtn" disabled>
+                          <span>📦</span>
+                          <span id="batchDownloadText">下载选中图片</span>
+                      </button>
+                  </div>
+              </div>
+          </div>
+
             <div class="images-grid" id="imagesGrid">
                 <!-- 空状态 -->
                 <div class="empty-state" id="emptyState">
@@ -495,16 +703,16 @@
 
     <script>
         // ==================== 全局变量 ====================
-        let convertedImages = []; // 存储转换后的图片数据
-        let pdfFileName = ''; // PDF 文件名
+      let convertedImages = []; // 存储转换后的图片数据
+      let docFileName = ''; // 文档文件名
+      let docType = ''; // 文档类型
+      let backendAvailable = false; // 后端 API 是否可用
+      let selectedIndices = new Set(); // 已选择的图片索引
+     let isConverting = false; // 是否正在转换中
 
         // ==================== DOM 元素 ====================
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
-        const formatSelect = document.getElementById('formatSelect');
-        const scaleSlider = document.getElementById('scaleSlider');
-        const scaleValue = document.getElementById('scaleValue');
-        const qualitySelect = document.getElementById('qualitySelect');
         const progressSection = document.getElementById('progressSection');
         const progressText = document.getElementById('progressText');
         const progressFill = document.getElementById('progressFill');
@@ -512,22 +720,25 @@
         const imagesGrid = document.getElementById('imagesGrid');
         const emptyState = document.getElementById('emptyState');
         const batchDownloadBtn = document.getElementById('batchDownloadBtn');
-        const batchDownloadText = document.getElementById('batchDownloadText');
-        const successToast = document.getElementById('successToast');
+      const batchDownloadText = document.getElementById('batchDownloadText');
+     const selectAllBtn = document.getElementById('selectAllBtn');
+    const deselectAllBtn = document.getElementById('deselectAllBtn');
+    const successToast = document.getElementById('successToast');
+
         const successCount = document.getElementById('successCount');
         const sectionTitle = document.getElementById('sectionTitle');
 
         // ==================== 事件监听 ====================
         
-        // 更新缩放值显示
-        scaleSlider.addEventListener('input', () => {
-            scaleValue.textContent = `${scaleSlider.value}x`;
-        });
-
         // 点击上传区域
-        uploadArea.addEventListener('click', () => {
-            fileInput.click();
-        });
+       uploadArea.addEventListener('click', () => {
+            // 检查是否正在转换中
+         if (isConverting) {
+             showError('⚠️ 文件正在转换中，请稍候再上传！');
+             return;  // 阻止打开文件选择弹窗
+         }
+          fileInput.click();
+       });
 
         // 文件选择
         fileInput.addEventListener('change', (e) => {
@@ -547,74 +758,214 @@
         });
 
         uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('drag-over');
+           e.preventDefault();
+          uploadArea.classList.remove('drag-over');
             
-            if (e.dataTransfer.files.length > 0) {
-                handleFile(e.dataTransfer.files[0]);
-            }
-        });
+           // 检查是否正在转换中
+         if (isConverting) {
+             showError('⚠️ 文件正在转换中，请稍候再上传！');
+            return;  // 阻止处理拖拽的文件
+         }
+            
+         if (e.dataTransfer.files.length > 0) {
+             handleFile(e.dataTransfer.files[0]);
+         }
+      });
 
-        // 批量下载
-        batchDownloadBtn.addEventListener('click', downloadAllImages);
+      // 批量下载
+       batchDownloadBtn.addEventListener('click', () => {
+          if (selectedIndices.size > 0) {
+               // 有选中的图片，下载选中的
+              downloadSelectedImages();
+           } else {
+               // 没有选中，下载全部
+              downloadAllImages();
+           }
+       });
+
+       // 全选
+      selectAllBtn.addEventListener('click', selectAllPages);
+
+       // 取消全选
+      deselectAllBtn.addEventListener('click', deselectAllPages);
 
         // ==================== 核心功能函数 ====================
 
         /**
-         * 处理上传的文件
+         * 处理上传的文件（智能版 - 支持 PDF/Word/PPT）
          */
         async function handleFile(file) {
-            // 重置状态
-            hideError();
-            convertedImages = [];
+            // 检查是否正在转换中
+         if (isConverting) {
+             showError('⚠️ 文件正在转换中，请稍候再上传！');
+              return;
+         }
+            
+          // 设置转换中状态
+       isConverting = true;
+        
+         // 添加视觉上的禁用状态
+       uploadArea.classList.add('converting');
+        
+         // 重置状态
+       hideError();
+     convertedImages = [];
             
             // 验证文件类型
-            if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
-                showError('❌ 请上传有效的 PDF 文件！');
+            const validTypes = [
+                'application/pdf',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+            ];
+            const validExtensions = ['.pdf', '.docx', '.doc', '.pptx'];
+            
+            const isValidType= validTypes.includes(file.type);
+            const hasValidExtension = validExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
+            
+           if (!isValidType && !hasValidExtension) {
+                showError('❌ 请上传有效的 PDF、DOCX、DOC 或 PPTX 文件！');
                 return;
             }
 
             // 验证文件大小（50MB）
-            if (file.size > 50 * 1024 * 1024) {
+           if (file.size > 50 * 1024 * 1024) {
                 showError('❌ 文件大小不能超过 50MB！');
                 return;
             }
 
-            pdfFileName = file.name.replace('.pdf', '');
+            // 提取文件名和类型
+            const lastDotIndex = file.name.lastIndexOf('.');
+            docFileName = file.name.substring(0, lastDotIndex);
+            docType= file.name.substring(lastDotIndex + 1).toLowerCase();
             
             // 显示进度
             showProgress(0, 0);
             
             try {
-                // 读取 PDF 文件
-                const arrayBuffer = await readFileAsArrayBuffer(file);
-                
-                // 加载 PDF 文档
-                const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
-                
-                const totalPages = pdf.numPages;
-                showProgress(0, totalPages);
-
-                // 清空图片网格
-                imagesGrid.innerHTML = '';
-                
-                // 逐页转换
-                for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-                    await convertPageToImage(pdf, pageNum, totalPages);
+                // 根据文件类型调用不同的处理方法
+               if (docType === 'pdf') {
+                    // PDF 文件：前端直接处理
+                    await processPDF(file);
+                } else if (['docx', 'doc', 'pptx'].includes(docType)) {
+                    // Office 文档：检查后端是否可用
+                    const hasBackend = await checkBackendAvailable();
+                   if (hasBackend) {
+                        await processOfficeDocument(file);
+                    } else {
+                        showError('⚠️ Office 文档需要后端服务器支持，请启动 Python 服务器后重试');
+                        hideProgress();
+                    }
+                } else {
+                    throw new Error('不支持的文件格式');
                 }
 
-                // 转换完成
-                hideProgress();
-                showSuccess(totalPages);
-                updateSectionTitle(totalPages);
-                enableBatchDownload(totalPages);
-
             } catch (error) {
-                console.error('PDF 转换失败:', error);
+                console.error('转换失败:', error);
                 showError(`❌ 转换失败：${error.message}`);
                 hideProgress();
             }
         }
+
+        /**
+         * 处理 PDF 文件（前端处理）
+         */
+        async function processPDF(file) {
+           // 设置转换中状态
+         isConverting = true;
+            
+         // 读取 PDF 文件
+       const arrayBuffer= await readFileAsArrayBuffer(file);
+            
+            // 加载 PDF 文档
+            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+            
+            const totalPages = pdf.numPages;
+            showProgress(0, totalPages);
+
+            // 清空图片网格
+            imagesGrid.innerHTML = '';
+            
+            // 逐页转换
+            for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+                await convertPageToImage(pdf, pageNum, totalPages);
+            }
+
+            // 转换完成
+     hideProgress();
+      showSuccess(totalPages);
+     updateSectionTitle(totalPages);
+    enableBatchDownload(totalPages);
+     
+     // 启用多选功能
+   enableMultiSelect();
+     
+     // 重置转换状态
+   isConverting = false;
+    
+    // 移除禁用状态
+   uploadArea.classList.remove('converting');
+}
+
+        /**
+         * 处理 Office 文档（通过后端 API）
+         */
+        async function processOfficeDocument(file) {
+           // 设置转换中状态
+         isConverting = true;
+            
+       const formData = new FormData();
+      formData.append('file', file);
+
+            try {
+                const response = await fetch('/api/convert', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+               if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || '转换失败');
+                }
+                
+                const result = await response.json();
+                
+                // 处理返回的图片数据
+                const totalPages = result.images.length;
+                showProgress(0, totalPages);
+                
+                imagesGrid.innerHTML = '';
+                
+                // 添加所有图片
+                result.images.forEach((imageData, index) => {
+                    convertedImages.push({
+                        pageNum: index + 1,
+                        dataUrl: imageData,
+                        format: 'png'
+                    });
+                    addImageCard(imageData, index + 1, totalPages);
+                    updateProgress(index +1, totalPages);
+                });
+                
+                hideProgress();
+                showSuccess(totalPages);
+                updateSectionTitle(totalPages);
+                enableBatchDownload(totalPages);
+                
+                // 启用多选功能
+                enableMultiSelect();
+                
+            } catch (error) {
+                console.error('Office 文档转换失败:', error);
+                throw new Error(`Office 文档转换失败：${error.message}`);
+                
+                // 发生错误时也要重置状态
+             isConverting = false;
+            
+        // 移除禁用状态
+      uploadArea.classList.remove('converting');
+      }
+  }
 
         /**
          * 将文件读取为 ArrayBuffer
@@ -633,7 +984,7 @@
          */
         async function convertPageToImage(pdf, pageNum, totalPages) {
             const page = await pdf.getPage(pageNum);
-            const scale = parseFloat(scaleSlider.value);
+            const scale = 2.0; // 固定 2x 缩放
             
             // 获取视口
             const viewport = page.getViewport({ scale });
@@ -650,21 +1001,14 @@
                 viewport: viewport
             }).promise;
 
-            // 获取输出格式和质量
-            const format = formatSelect.value;
-            const quality = parseFloat(qualitySelect.value);
-            
-            // 转换为图片数据
-            const imageDataUrl = canvas.toDataURL(
-                format === 'png' ? 'image/png' : 'image/jpeg', 
-                quality
-            );
+            // 转换为 PNG 图片数据（固定格式）
+           const imageDataUrl = canvas.toDataURL('image/png');
 
             // 保存图片数据
-            convertedImages.push({
+           convertedImages.push({
                 pageNum,
                 dataUrl: imageDataUrl,
-                format: format
+                format: 'png'  // 固定为 PNG
             });
 
             // 创建并添加图片卡片
@@ -679,43 +1023,141 @@
          */
         function addImageCard(imageDataUrl, pageNum, totalPages) {
             const card = document.createElement('div');
-            card.className = 'image-card';
-            
+            card.className = 'image-card disabled'; // 初始为禁用状态
+            card.dataset.pageIndex = convertedImages.length -1;
+                    
             card.innerHTML = `
+                <div class="image-checkbox" onclick="toggleImageSelection(event, ${convertedImages.length - 1})"></div>
                 <div class="image-wrapper">
                     <img src="${imageDataUrl}" alt="第 ${pageNum} 页">
                 </div>
                 <div class="image-info">
                     <span class="page-number">第 ${pageNum} 页</span>
-                    <button class="download-btn" onclick="downloadSingleImage(${pageNum - 1})">
+                    <button class="download-btn" onclick="event.stopPropagation(); downloadSingleImage(${pageNum -1})">
                         ⬇️ 下载
                     </button>
                 </div>
             `;
-            
+                    
             imagesGrid.appendChild(card);
         }
 
         /**
-         * 下载单张图片
+         * 检测后端 API 是否可用（增强版）
          */
-        function downloadSingleImage(index) {
-            if (index >= 0 && index < convertedImages.length) {
-                const image = convertedImages[index];
-                const link = document.createElement('a');
-                link.href = image.dataUrl;
-                link.download = `${pdfFileName}_page_${String(image.pageNum).padStart(3, '0')}.${image.format}`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+       async function checkBackendAvailable() {
+          if (backendAvailable) return true;
+            
+            try {
+                // 尝试访问健康检查接口
+                const controller= new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 秒超时
+                
+                const response = await fetch('/api/health', { 
+                    method: 'HEAD',
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                
+                console.log('🔍 后端健康检查响应状态:', response.status);
+                backendAvailable = response.ok;
+                
+               if (response.ok) {
+                    console.log('✅ 后端 API 可用 - 可以处理 Office 文档');
+                } else {
+                    console.warn('⚠️ 后端 API 响应异常，状态码:', response.status);
+                }
+                
+                return backendAvailable;
+            } catch (error) {
+                console.error('❌ 后端 API 检测失败:', error.message);
+                console.log('\n💡 可能的原因：');
+                console.log('1. 未启动 Python 服务器');
+                console.log('2. 服务器未在正确端口运行');
+                console.log('3. 防火墙阻止了连接');
+                console.log('\n✅ 解决方法：');
+                console.log('   python server.py --lan');
+                console.log('   然后访问：http://localhost:5001\n');
+                backendAvailable = false;
+                return false;
             }
         }
 
         /**
-         * 批量下载所有图片（ZIP 打包）
+         * 检测设备是否为移动端
+         */
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        /**
+         * 检测是否为 iOS 设备
+         */
+        function isIOS() {
+            return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        }
+
+        /**
+         * 下载单张图片（优化移动端兼容）
+         */
+        function downloadSingleImage(index) {
+           if (index >= 0 && index < convertedImages.length) {
+                const image = convertedImages[index];
+                const fileName = `${docFileName}_page_${String(image.pageNum).padStart(3, '0')}.${image.format}`;
+                
+                // 移动端特殊处理
+               if (isMobileDevice()) {
+                    // iOS 设备：在新窗口打开图片
+                   if (isIOS()) {
+                        const newWindow = window.open(image.dataUrl, '_blank');
+                       if (!newWindow) {
+                            showError('❌ 无法打开图片，请检查浏览器弹窗设置');
+                        } else {
+                            showSuccessToast('图片已在新窗口打开，长按可保存');
+                        }
+                    } else {
+                        // Android 设备：尝试使用 blob 方式下载
+                        fetch(image.dataUrl)
+                            .then(res => res.blob())
+                            .then(blob => {
+                                const url = URL.createObjectURL(blob);
+                                const link = document.createElement('a');
+                                link.href = url;
+                                link.download = fileName;
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                                URL.revokeObjectURL(url);
+                                showSuccessToast('开始下载...');
+                            })
+                            .catch(err => {
+                                console.error('下载失败:', err);
+                                // 回退到直接打开
+                                const newWindow = window.open(image.dataUrl, '_blank');
+                               if (newWindow) {
+                                    showSuccessToast('图片已在新窗口打开，长按可保存');
+                                } else {
+                                    showError('❌ 下载失败，请重试');
+                                }
+                            });
+                    }
+                } else {
+                    // PC 端：原有逻辑
+                    const link = document.createElement('a');
+                    link.href = image.dataUrl;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            }
+        }
+
+        /**
+         * 批量下载所有图片（ZIP 打包）（优化移动端兼容）
          */
         async function downloadAllImages() {
-            if (convertedImages.length === 0) return;
+           if (convertedImages.length === 0) return;
 
             // 禁用按钮防止重复点击
             batchDownloadBtn.disabled = true;
@@ -727,29 +1169,204 @@
                 // 将所有图片添加到 ZIP
                 convertedImages.forEach((image, index) => {
                     const base64Data = image.dataUrl.split(',')[1];
-                    const fileName = `${pdfFileName}_page_${String(image.pageNum).padStart(3, '0')}.${image.format}`;
+                    const fileName = `${docFileName}_page_${String(image.pageNum).padStart(3, '0')}.${image.format}`;
                     zip.file(fileName, base64Data, { base64: true });
                 });
 
-                // 生成并下载 ZIP
+                // 生成 ZIP 文件
                 const content = await zip.generateAsync({ type: 'blob' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(content);
-                link.download = `${pdfFileName}_images.zip`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(link.href);
+                const fileName = `${docFileName}_images.zip`;
 
-                // 恢复按钮状态
-                batchDownloadBtn.disabled = false;
-                batchDownloadText.textContent = '批量下载全部图片';
+                // 移动端特殊处理
+               if (isMobileDevice()) {
+                   if (isIOS()) {
+                        // iOS: 显示提示并提供替代方案
+                        showSuccessToast('正在准备下载包...');
+                        
+                        // 尝试使用 iOS 兼容的方式
+                        const blob = new Blob([content], { type: 'application/zip' });
+                        const reader= new FileReader();
+                        reader.readAsDataURL(blob);
+                        reader.onloadend = function() {
+                            const base64data = reader.result;
+                            const newWindow = window.open(base64data, '_blank');
+                           if (newWindow) {
+                                showSuccessToast('ZIP 文件已打开，请使用 Safari 下载');
+                            } else {
+                                showError('⚠️ iOS 限制，建议逐张保存图片');
+                            }
+                            resetDownloadButton();
+                        };
+                    } else {
+                        // Android: 使用 blob 下载
+                        const url = URL.createObjectURL(content);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                        showSuccessToast('开始下载 ZIP 包...');
+                        resetDownloadButton();
+                    }
+                } else {
+                    // PC 端：原有逻辑
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(content);
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                    resetDownloadButton();
+                }
 
             } catch (error) {
                 console.error('打包下载失败:', error);
                 showError('❌ 打包下载失败，请重试');
-                batchDownloadBtn.disabled = false;
-                batchDownloadText.textContent = '批量下载全部图片';
+                resetDownloadButton();
+            }
+        }
+
+        /**
+         * 重置下载按钮状态
+         */
+        function resetDownloadButton() {
+          setTimeout(() => {
+              batchDownloadBtn.disabled = false;
+              batchDownloadText.textContent = '下载选中图片';
+            }, 1000);
+        }
+
+        // ==================== 多选功能函数 ====================
+
+        /**
+         * 全选所有页面
+         */
+       function selectAllPages() {
+        const cards = imagesGrid.querySelectorAll('.image-card');
+           cards.forEach((card) => {
+           const index = parseInt(card.dataset.pageIndex);
+            if (!selectedIndices.has(index)) {
+                selectedIndices.add(index);
+                  card.classList.add('selected');
+                  card.querySelector('.image-checkbox').classList.add('checked');
+              }
+           });
+          updateSelectionCount();
+          showSuccessToast(`已选择 ${selectedIndices.size} 张图片`);
+       }
+
+        /**
+         * 取消全选
+         */
+       function deselectAllPages() {
+         selectedIndices.clear();
+        const cards = imagesGrid.querySelectorAll('.image-card.selected');
+           cards.forEach(card => {
+             card.classList.remove('selected');
+              card.querySelector('.image-checkbox').classList.remove('checked');
+           });
+          updateSelectionCount();
+          showSuccessToast('已取消选择');
+       }
+
+        /**
+         * 清空选择（简化版）
+         */
+       function clearSelection() {
+         deselectAllPages();
+       }
+
+        /**
+         * 切换图片选择状态
+         */
+       function toggleImageSelection(event, index) {
+         event.stopPropagation();
+            
+       const card = imagesGrid.querySelector(`[data-page-index="${index}"]`);
+         if (!card) return;
+            
+        if (selectedIndices.has(index)) {
+              // 取消选择
+            selectedIndices.delete(index);
+               card.classList.remove('selected');
+               card.querySelector('.image-checkbox').classList.remove('checked');
+         } else {
+              // 添加到选择
+            selectedIndices.add(index);
+               card.classList.add('selected');
+               card.querySelector('.image-checkbox').classList.add('checked');
+         }
+            
+        updateSelectionCount();
+      }
+
+        /**
+         * 更新选择数量显示
+         */
+       function updateSelectionCount() {
+       // ✅ 更新下载按钮文案，显示为"下载选中图片（X 张）"
+   batchDownloadText.textContent = `下载选中图片（${selectedIndices.size}张）`;
+          
+     // 根据选择数量启用/禁用下载按钮
+ batchDownloadBtn.disabled = selectedIndices.size === 0;
+   }
+
+        /**
+         * 下载选中的图片
+         */
+       async function downloadSelectedImages() {
+          if (selectedIndices.size === 0) {
+                showError('⚠️ 请先选择要下载的图片');
+                return;
+            }
+            
+          if (selectedIndices.size === 1) {
+                // 只选了一张，直接下载
+                const index = Array.from(selectedIndices)[0];
+                downloadSingleImage(index);
+                return;
+            }
+            
+            // 多张选中，打包下载
+            try {
+                const zip = new JSZip();
+                
+                // 按顺序添加选中的图片
+                const sortedIndices = Array.from(selectedIndices).sort((a, b) => a - b);
+                
+                sortedIndices.forEach(index => {
+                    const image = convertedImages[index];
+                    const base64Data = image.dataUrl.split(',')[1];
+                    const fileName = `${docFileName}_page_${String(image.pageNum).padStart(3, '0')}.${image.format}`;
+                    zip.file(fileName, base64Data, { base64: true });
+                });
+
+                // 生成 ZIP 文件
+                const content = await zip.generateAsync({ type: 'blob' });
+                const fileName = `${docFileName}_selected_${selectedIndices.size}_pages.zip`;
+
+                // 下载
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+                
+                showSuccessToast(`✅ 已打包下载 ${selectedIndices.size} 张图片`);
+                
+                // 退出多选模式
+              if (selectMode) {
+                    toggleSelectMode();
+                }
+                
+            } catch (error) {
+                console.error('打包下载失败:', error);
+                showError('❌ 打包下载失败，请重试');
             }
         }
 
@@ -816,6 +1433,43 @@
         }
 
         /**
+         * 显示成功提示消息（通用）
+         */
+        function showSuccessToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'success-toast';
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #d4edda;
+                color: #155724;
+                padding: 15px 25px;
+                border-radius: 10px;
+                border: 1px solid #c3e6cb;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                z-index: 1001;
+                transform: translateX(400px);
+                transition: transform 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // 触发动画
+            setTimeout(() => {
+                toast.style.transform = 'translateX(0)';
+            }, 10);
+            
+            // 3 秒后移除
+            setTimeout(() => {
+                toast.style.transform = 'translateX(400px)';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        /**
          * 更新章节标题
          */
         function updateSectionTitle(count) {
@@ -827,7 +1481,7 @@
          */
         function enableBatchDownload(count) {
             batchDownloadBtn.disabled = false;
-            batchDownloadText.textContent = `批量下载全部图片（${count}张）`;
+            batchDownloadText.textContent = `下载选中图片（${count}张）`;
         }
 
         /**
@@ -835,8 +1489,102 @@
          */
         function disableBatchDownload() {
             batchDownloadBtn.disabled = true;
-            batchDownloadText.textContent = '批量下载全部图片';
+            batchDownloadText.textContent = '下载选中图片';
         }
+
+        /**
+         * 打开图片预览
+         */
+        function openPreview(index) {
+           if (index < 0 || index >= convertedImages.length) return;
+            
+            currentPreviewIndex = index;
+            const image = convertedImages[index];
+            
+            // 创建预览模态框
+            const modal = document.createElement('div');
+            modal.className = 'image-preview-modal';
+            modal.id = 'imagePreviewModal';
+            
+            modal.innerHTML = `
+                <div class="preview-content">
+                    <div class="preview-info">
+                        <span>📄 ${docFileName}</span>
+                        <span>第 ${image.pageNum} / ${convertedImages.length} 页</span>
+                        <span>${image.format.toUpperCase()}</span>
+                    </div>
+                    <div class="preview-image">
+                        <img src="${image.dataUrl}" alt="第 ${image.pageNum} 页">
+                    </div>
+                    <div class="preview-controls">
+                        <button class="preview-btn" onclick="prevImage()">
+                            <span>◂</span>
+                        </button>
+                        <button class="preview-btn" onclick="nextImage()">
+                            <span>▸</span>
+                        </button>
+                        <button class="preview-btn" onclick="closePreview()">
+                            <span>❌</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // 添加关闭事件
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closePreview();
+                }
+            });
+        }
+
+        /**
+         * 关闭图片预览
+         */
+        function closePreview() {
+            const modal = document.getElementById('imagePreviewModal');
+            if (modal) {
+                document.body.removeChild(modal);
+            }
+        }
+
+        /**
+         * 显示上一张图片
+         */
+        function prevImage() {
+            if (currentPreviewIndex > 0) {
+                openPreview(currentPreviewIndex - 1);
+            }
+        }
+
+        /**
+         * 显示下一张图片
+         */
+        function nextImage() {
+            if (currentPreviewIndex < convertedImages.length - 1) {
+                openPreview(currentPreviewIndex + 1);
+            }
+        }
+
+        /**
+         * 启用多选功能（简化版 - 始终可用）
+         */
+        function enableMultiSelect() {
+            // 移除所有图片卡片的禁用状态
+         const cards = imagesGrid.querySelectorAll('.image-card.disabled');
+            cards.forEach(card => {
+               card.classList.remove('disabled');
+           });
+            
+           // 启用全选/取消全选按钮
+         selectAllBtn.disabled = false;
+         deselectAllBtn.disabled = false;
+            
+         console.log('✅ 图片解析完成，选择功能已启用');
+       }
+
     </script>
 </body>
 </html>
